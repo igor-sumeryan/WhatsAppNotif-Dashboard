@@ -1,0 +1,222 @@
+@{
+    ViewData["Title"] = "Dashboard de Notificações WhatsApp";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h2 class="text-center mb-4">Dashboard de Notificações de Pedidos via WhatsApp</h2>
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Status dos Pedidos para os Próximos 3 Dias</h5>
+                        <div>
+                            <span id="last-update"></span>
+                            <span class="ms-2"><i class="fas fa-sync-alt fa-spin" id="refresh-indicator" style="display: none;"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Atendidos</h5>
+                                    <h3 class="card-text" id="count-atendidos">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-dark mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Parciais</h5>
+                                    <h3 class="card-text" id="count-parciais">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Não Atendidos</h5>
+                                    <h3 class="card-text" id="count-nao-atendidos">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-secondary text-white mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pendentes</h5>
+                                    <h3 class="card-text" id="count-pendentes">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="notifications-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Pedido Venda</th>
+                                    <th>Data Entrega</th>
+                                    <th>Cliente</th>
+                                    <th>Pedido Compra</th>
+                                    <th>Cooperado</th>
+                                    <th>Envio WhatsApp</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notifications-body">
+                                <tr>
+                                    <td colspan="7" class="text-center">Carregando dados...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const refreshInterval = @ViewBag.RefreshInterval;
+            let isFirstLoad = true;
+
+            function updateLastRefreshTime() {
+                const now = new Date();
+                const formattedTime = now.toLocaleTimeString();
+                $('#last-update').text(`Última atualização: ${formattedTime}`);
+            }
+
+            function getStatusClass(status) {
+                if (status === 'Pedido Atendido Integralmente') return 'bg-success text-white';
+                if (status === 'Pedido Atendido Parcialmente') return 'bg-warning';
+                if (status === 'Pedido Não Atendido') return 'bg-danger text-white';
+                return '';
+            }
+
+            function formatDateTime(dateString) {
+                if (!dateString) return '—';
+                const date = new Date(dateString);
+                return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+
+            function loadData() {
+                $('#refresh-indicator').show();
+                
+                $.ajax({
+                    url: '/Home/GetNotifications',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        updateDashboard(data);
+                        updateLastRefreshTime();
+                        
+                        if (isFirstLoad) {
+                            isFirstLoad = false;
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Erro ao carregar dados:', error);
+                    },
+                    complete: function () {
+                        $('#refresh-indicator').hide();
+                    }
+                });
+            }
+
+            function updateDashboard(notifications) {
+                // Clear table
+                const tableBody = $('#notifications-body');
+                tableBody.empty();
+                
+                // Reset counters
+                let countAtendidos = 0;
+                let countParciais = 0;
+                let countNaoAtendidos = 0;
+                let countPendentes = 0;
+                
+                // Group notifications by sales order
+                const salesOrderGroups = {};
+                
+                notifications.forEach(notification => {
+                    const salesOrderKey = notification.codigoPedidoVenda;
+                    
+                    if (!salesOrderGroups[salesOrderKey]) {
+                        salesOrderGroups[salesOrderKey] = [];
+                    }
+                    
+                    salesOrderGroups[salesOrderKey].push(notification);
+                    
+                    // Count statuses
+                    if (notification.statusAtendimentoPedido === 'Pedido Atendido Integralmente') {
+                        countAtendidos++;
+                    } else if (notification.statusAtendimentoPedido === 'Pedido Atendido Parcialmente') {
+                        countParciais++;
+                    } else if (notification.statusAtendimentoPedido === 'Pedido Não Atendido') {
+                        countNaoAtendidos++;
+                    } else {
+                        countPendentes++;
+                    }
+                });
+                
+                // Update counters in UI
+                $('#count-atendidos').text(countAtendidos);
+                $('#count-parciais').text(countParciais);
+                $('#count-nao-atendidos').text(countNaoAtendidos);
+                $('#count-pendentes').text(countPendentes);
+                
+                // If no data, show a message
+                if (notifications.length === 0) {
+                    tableBody.append('<tr><td colspan="7" class="text-center">Nenhum dado encontrado para os próximos 3 dias.</td></tr>');
+                    return;
+                }
+                
+                // Add rows to table with grouping by sales order
+                let currentDate = null;
+                
+                notifications.forEach(notification => {
+                    const deliveryDate = new Date(notification.dataEntregaPedidoVenda);
+                    const formattedDate = deliveryDate.toLocaleDateString();
+                    
+                    // Add date header if changed
+                    if (formattedDate !== currentDate) {
+                        currentDate = formattedDate;
+                        const dayOfWeek = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }).format(deliveryDate);
+                        const capitalizedDayOfWeek = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+                        
+                        tableBody.append(`
+                            <tr class="table-primary">
+                                <td colspan="7" class="fw-bold">
+                                    ${capitalizedDayOfWeek}, ${formattedDate}
+                                </td>
+                            </tr>
+                        `);
+                    }
+                    
+                    const row = `
+                        <tr>
+                            <td>${notification.codigoPedidoVenda}</td>
+                            <td>${formattedDate}</td>
+                            <td>${notification.nomeCliente}</td>
+                            <td>${notification.codigoPedidoCompra}</td>
+                            <td>${notification.nomeCooperado}</td>
+                            <td>${formatDateTime(notification.dataHoraEnvioMensagem)}</td>
+                            <td class="${getStatusClass(notification.statusAtendimentoPedido)}">${notification.statusAtendimentoPedido}</td>
+                        </tr>
+                    `;
+                    
+                    tableBody.append(row);
+                });
+            }
+
+            // Initial load
+            loadData();
+            
+            // Set up auto-refresh
+            setInterval(loadData, refreshInterval);
+        });
+    </script>
+}
