@@ -26,5 +26,16 @@ namespace WhatsAppNotificationDashboard.Controllers
             var notifications = await _databaseService.GetNotificationsAsync();
             return Json(notifications);
         }
+        
+        [HttpGet]
+        public IActionResult GetConnectionStatus()
+        {
+            return Json(new
+            {
+                isConnected = _databaseService.IsConnected,
+                lastAttempt = _databaseService.LastConnectionAttempt,
+                error = _databaseService.ConnectionError
+            });
+        }
     }
 }

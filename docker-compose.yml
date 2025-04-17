@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: whatsapp-notification-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "@qowtaw%7hyzGacyvtug#"
+      POSTGRES_DB: bpo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - whatsapp-network
+    restart: unless-stopped
+
+  whatsapp-dashboard:
+    image: whatsapp-notification-dashboard:latest
+    container_name: whatsapp-notification-dashboard
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bpo;Username=postgres;Password=@qowtaw%7hyzGacyvtug#;SSL Mode=Disable
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - whatsapp-network
+    restart: unless-stopped
+
+networks:
+  whatsapp-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

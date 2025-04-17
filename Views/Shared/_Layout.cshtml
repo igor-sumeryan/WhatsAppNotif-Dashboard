@@ -9,24 +9,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fab fa-whatsapp me-2"></i>Dashboard de Notificações
-                </a>
-            </div>
-        </nav>
-    </header>
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
+    <div class="container-fluid pt-0">
+        <main role="main" class="pb-0">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-dark text-white">
-        <div class="container-fluid text-center py-3">
-            Dashboard de Notificações WhatsApp &copy; @DateTime.Now.Year
+    <footer class="border-top footer text-muted bg-dark text-white py-1">
+        <div class="container-fluid text-center small">
+            <i class="fab fa-whatsapp me-1"></i>Dashboard de Notificações &copy; @DateTime.Now.Year | M&B - Powered by Sumeryan
         </div>
     </footer>
 

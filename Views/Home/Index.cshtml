@@ -2,75 +2,73 @@
     ViewData["Title"] = "Dashboard de Notificações WhatsApp";
 }
 
-<div class="container-fluid mt-4">
-    <div class="row mb-3">
+<div class="container-fluid mt-1">
+    <div class="row flex-grow-1">
         <div class="col">
-            <h2 class="text-center mb-4">Dashboard de Notificações de Pedidos via WhatsApp</h2>
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Status dos Pedidos para os Próximos 3 Dias</h5>
-                        <div>
-                            <span id="last-update"></span>
-                            <span class="ms-2"><i class="fas fa-sync-alt fa-spin" id="refresh-indicator" style="display: none;"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
+                <div class="card-body pt-1 pb-0">
+                    <div class="row">
                         <div class="col-md-3">
-                            <div class="card bg-success text-white mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">Atendidos</h5>
-                                    <h3 class="card-text" id="count-atendidos">0</h3>
+                            <div class="card mb-1">
+                                <div class="card-header bg-primary text-white py-1">
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">Status dos Pedidos - Próximos 3 Dias</h6>
+                                            <div id="db-connection-status" class="connection-status">
+                                                <span class="badge rounded-pill bg-secondary" data-bs-toggle="tooltip" data-bs-placement="left" title="Verificando conexão...">
+                                                    <i class="fas fa-database"></i> <span id="connection-text">Verificando</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <h6 id="last-update" class="mb-0 mt-1"></h6>
+                                            <span class="ms-1"><i class="fas fa-sync-alt fa-spin" id="refresh-indicator" style="display: none;"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-2">
+                                    <div class="m-0">
+                                        <div class="d-flex justify-content-between align-items-center bg-success text-white p-2 rounded mb-2">
+                                            <h6 class="mb-0">Atendidos</h6>
+                                            <h4 class="mb-0" id="count-atendidos">0</h4>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center bg-warning text-dark p-2 rounded mb-2">
+                                            <h6 class="mb-0">Parciais</h6>
+                                            <h4 class="mb-0" id="count-parciais">0</h4>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center bg-danger text-white p-2 rounded mb-2">
+                                            <h6 class="mb-0">Não Atendidos</h6>
+                                            <h4 class="mb-0" id="count-nao-atendidos">0</h4>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center bg-secondary text-white p-2 rounded">
+                                            <h6 class="mb-0">Pendentes</h6>
+                                            <h4 class="mb-0" id="count-pendentes">0</h4>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning text-dark mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">Parciais</h5>
-                                    <h3 class="card-text" id="count-parciais">0</h3>
-                                </div>
+                        
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover table-sm table-compact" id="notifications-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th width="30%">Pedido</th>
+                                            <th width="15%">Compra</th>
+                                            <th width="30%">Cooperado</th>
+                                            <th width="15%">Envio</th>
+                                            <th width="10%">St</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="notifications-body">
+                                        <tr>
+                                            <td colspan="5" class="text-center py-3">Carregando dados...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card bg-danger text-white mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">Não Atendidos</h5>
-                                    <h3 class="card-text" id="count-nao-atendidos">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-secondary text-white mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">Pendentes</h5>
-                                    <h3 class="card-text" id="count-pendentes">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="notifications-table">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Pedido Venda</th>
-                                    <th>Data Entrega</th>
-                                    <th>Cliente</th>
-                                    <th>Pedido Compra</th>
-                                    <th>Cooperado</th>
-                                    <th>Envio WhatsApp</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="notifications-body">
-                                <tr>
-                                    <td colspan="7" class="text-center">Carregando dados...</td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -86,15 +84,18 @@
 
             function updateLastRefreshTime() {
                 const now = new Date();
-                const formattedTime = now.toLocaleTimeString();
-                $('#last-update').text(`Última atualização: ${formattedTime}`);
+                const hora = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                $('#last-update').text(`Atualizado: ${hora}`);
             }
 
-            function getStatusClass(status) {
-                if (status === 'Pedido Atendido Integralmente') return 'bg-success text-white';
-                if (status === 'Pedido Atendido Parcialmente') return 'bg-warning';
-                if (status === 'Pedido Não Atendido') return 'bg-danger text-white';
-                return '';
+            function getStatusIcon(status) {
+                if (status === 'Pedido Atendido Integralmente') 
+                    return '<div class="status-icon bg-success text-white" title="Pedido Atendido Integralmente"><i class="fas fa-check"></i></div>';
+                if (status === 'Pedido Atendido Parcialmente') 
+                    return '<div class="status-icon bg-warning" title="Pedido Atendido Parcialmente"><i class="fas fa-exclamation-triangle"></i></div>';
+                if (status === 'Pedido Não Atendido') 
+                    return '<div class="status-icon bg-danger text-white" title="Pedido Não Atendido"><i class="fas fa-times"></i></div>';
+                return '<div class="status-icon bg-secondary text-white" title="Pendente"><i class="fas fa-clock"></i></div>';
             }
 
             function formatDateTime(dateString) {
@@ -117,9 +118,29 @@
                         if (isFirstLoad) {
                             isFirstLoad = false;
                         }
+                        
+                        // Verificar o status da conexão após carregar os dados
+                        checkDatabaseConnection();
                     },
                     error: function (error) {
                         console.error('Erro ao carregar dados:', error);
+                        
+                        // Verificar o status da conexão após erro
+                        checkDatabaseConnection();
+                        
+                        // Mostrar mensagem na tabela
+                        const tableBody = $('#notifications-body');
+                        tableBody.empty();
+                        tableBody.append(`
+                            <tr>
+                                <td colspan="5" class="text-center py-3 bg-light">
+                                    <div class="text-danger">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        Não foi possível carregar os dados. Tentando reconectar ao banco de dados...
+                                    </div>
+                                </td>
+                            </tr>
+                        `);
                     },
                     complete: function () {
                         $('#refresh-indicator').hide();
@@ -170,7 +191,7 @@
                 
                 // If no data, show a message
                 if (notifications.length === 0) {
-                    tableBody.append('<tr><td colspan="7" class="text-center">Nenhum dado encontrado para os próximos 3 dias.</td></tr>');
+                    tableBody.append('<tr><td colspan="5" class="text-center py-3">Nenhum dado encontrado para os próximos 3 dias.</td></tr>');
                     return;
                 }
                 
@@ -189,22 +210,43 @@
                         
                         tableBody.append(`
                             <tr class="table-primary">
-                                <td colspan="7" class="fw-bold">
+                                <td colspan="5" class="fw-bold">
                                     ${capitalizedDayOfWeek}, ${formattedDate}
                                 </td>
                             </tr>
                         `);
                     }
                     
+                    // Combinar os dados do pedido de venda em uma única coluna com a data ao lado do número
+                    const pedidoVendaInfo = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${notification.codigoPedidoVenda}</span>
+                            <span class="text-muted ms-1">${formattedDate}</span>
+                        </div>
+                        <div class="cliente-nome">
+                            <span class="cliente-texto text-truncate d-inline-block w-100" title="${notification.nomeCliente}">${notification.nomeCliente}</span>
+                        </div>
+                    `;
+                    
+                    // Formatação de data/hora mais compacta para envio
+                    const dataHora = notification.dataHoraEnvioMensagem ? 
+                        new Date(notification.dataHoraEnvioMensagem) : null;
+                    
+                    let envioFormatado = '—';
+                    if (dataHora) {
+                        // Formato mais compacto: DD/MM HH:MM
+                        const dia = `${dataHora.getDate().toString().padStart(2, '0')}/${(dataHora.getMonth()+1).toString().padStart(2, '0')}`;
+                        const hora = `${dataHora.getHours().toString().padStart(2, '0')}:${dataHora.getMinutes().toString().padStart(2, '0')}`;
+                        envioFormatado = `<div><span class="text-muted small">${dia}</span> <span>${hora}</span></div>`;
+                    }
+                    
                     const row = `
                         <tr>
-                            <td>${notification.codigoPedidoVenda}</td>
-                            <td>${formattedDate}</td>
-                            <td>${notification.nomeCliente}</td>
-                            <td>${notification.codigoPedidoCompra}</td>
-                            <td>${notification.nomeCooperado}</td>
-                            <td>${formatDateTime(notification.dataHoraEnvioMensagem)}</td>
-                            <td class="${getStatusClass(notification.statusAtendimentoPedido)}">${notification.statusAtendimentoPedido}</td>
+                            <td>${pedidoVendaInfo}</td>
+                            <td><span>${notification.codigoPedidoCompra}</span></td>
+                            <td><span class="text-truncate d-inline-block" style="max-width: 100%;" title="${notification.nomeCooperado}">${notification.nomeCooperado}</span></td>
+                            <td>${envioFormatado}</td>
+                            <td class="text-center">${getStatusIcon(notification.statusAtendimentoPedido)}</td>
                         </tr>
                     `;
                     
@@ -212,11 +254,64 @@
                 });
             }
 
+            // Função para ajustar a altura da tabela com base na altura da tela
+            function adjustTableHeight() {
+                const windowHeight = window.innerHeight;
+                const headerHeight = 20; // Reduzida para aproximar do rodapé
+                const footerHeight = 80; // Ajustado para o rodapé original
+                const tableHeight = windowHeight - headerHeight - footerHeight;
+                $('.table-responsive').css('height', tableHeight + 'px');
+            }
+            
+            // Ajustar altura ao redimensionar a janela
+            $(window).on('resize', adjustTableHeight);
+            
+            // Função para verificar o status da conexão com o banco de dados
+            function checkDatabaseConnection() {
+                $.ajax({
+                    url: '/Home/GetConnectionStatus',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        const connectionStatus = $('#db-connection-status').find('span');
+                        const connectionText = $('#connection-text');
+                        
+                        if (data.isConnected) {
+                            connectionStatus.removeClass('bg-secondary bg-danger bg-warning').addClass('bg-success');
+                            connectionStatus.attr('title', 'Banco de dados conectado');
+                            connectionText.text('Conectado');
+                        } else {
+                            connectionStatus.removeClass('bg-secondary bg-success bg-warning').addClass('bg-danger');
+                            connectionStatus.attr('title', `Erro de conexão: ${data.error}. Tentando reconectar a cada 30 segundos.`);
+                            connectionText.text('Desconectado');
+                        }
+                        
+                        // Inicializa os tooltips do Bootstrap
+                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                        tooltipTriggerList.map(function (tooltipTriggerEl) {
+                            return new bootstrap.Tooltip(tooltipTriggerEl);
+                        });
+                    },
+                    error: function() {
+                        const connectionStatus = $('#db-connection-status').find('span');
+                        const connectionText = $('#connection-text');
+                        
+                        connectionStatus.removeClass('bg-secondary bg-success bg-warning').addClass('bg-danger');
+                        connectionStatus.attr('title', 'Erro ao verificar o status da conexão');
+                        connectionText.text('Erro');
+                    }
+                });
+            }
+
             // Initial load
             loadData();
+            adjustTableHeight();
+            checkDatabaseConnection();
             
             // Set up auto-refresh
             setInterval(loadData, refreshInterval);
+            // Verificar status da conexão a cada 10 segundos
+            setInterval(checkDatabaseConnection, 10000);
         });
     </script>
 }

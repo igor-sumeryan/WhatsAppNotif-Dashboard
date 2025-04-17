@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: whatsapp-dashboard-nodeport
+  namespace: hfh
+  labels:
+    app: hfh-wp-dash
+spec:
+  selector:
+    app: hfh-wp-dash
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080  # Porta entre 30000-32767
+      protocol: TCP
+  type: NodePort

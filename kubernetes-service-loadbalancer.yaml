@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: whatsapp-dashboard-lb
+  namespace: hfh
+  labels:
+    app: hfh-wp-dash
+  annotations:
+    # Adicione aqui quaisquer anotações específicas para o seu provedor de nuvem
+    # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"  # Para AWS Network Load Balancer
+    # service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # Para Azure Internal Load Balancer
+spec:
+  selector:
+    app: hfh-wp-dash
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer

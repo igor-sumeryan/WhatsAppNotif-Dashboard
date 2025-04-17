@@ -4,7 +4,9 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin-top: 20px;
+  margin-bottom: 20px; /* Volta para a margem original */
+  height: 100%;
   background-color: #f8f9fa;
 }
 
@@ -13,11 +15,12 @@ body {
   bottom: 0;
   width: 100%;
   white-space: nowrap;
-  line-height: 60px;
+  line-height: 30px; /* Volta para a altura original */
 }
 
 .card {
   transition: transform 0.3s;
+  top: 10px;
 }
 
 .card:hover {
@@ -25,7 +28,7 @@ body {
 }
 
 .table-responsive {
-  max-height: 65vh;
+  /* A altura será definida dinamicamente pelo JavaScript */
   overflow-y: auto;
 }
 
@@ -37,6 +40,28 @@ body {
 
 .bg-success, .bg-warning, .bg-danger, .bg-secondary {
   border-radius: 5px;
+}
+
+/* Estilo para a coluna de dados do pedido de venda */
+#notifications-table td:first-child {
+  max-width: 200px;
+}
+
+/* Melhorar a visualização em telas menores */
+@media (max-width: 992px) {
+  .col-md-3 {
+    margin-bottom: 20px;
+  }
+}
+
+/* Estilo para as totalizações */
+.d-flex.justify-content-between {
+  border-radius: 8px;
+  padding: 10px !important;
+}
+
+.d-flex.justify-content-between h6 {
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
@@ -52,3 +77,105 @@ body {
 #refresh-indicator {
   color: white;
 }
+
+/* Estilo para ícones de status */
+.status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.status-icon i {
+  font-size: 15px;
+}
+
+/* Classes para tamanhos de texto menores */
+.fs-7 {
+  font-size: 0.85rem !important;
+}
+
+.fs-8 {
+  font-size: 0.75rem !important;
+}
+
+/* Otimizando o espaço na tabela - reduzindo 10% nas alturas das linhas */
+#notifications-table td {
+  padding: 0.225rem 0.45rem; /* 10% menor */
+  vertical-align: middle;
+  line-height: 0.90; /* 10% menor (de 1.2 para 1.08) */
+}
+
+#notifications-table th {
+  font-size: 0.8rem;
+  padding: 0.225rem 0.45rem; /* 10% menor */
+  height: 20px; /* 10% menor (de 32 para 28.8) */
+}
+
+/* Reduz espaço entre linhas na tabela */
+#notifications-table tr {
+  height: auto;
+}
+
+/* Estilos para o nome do cliente (texto truncado em uma linha) */
+.cliente-nome {
+  line-height: 1;
+  margin: 0;
+  max-height: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Classe para reduzir o tamanho da fonte do cliente em 1/3 */
+.cliente-texto {
+  font-size: 0.67rem !important;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ajusta tamanho da célula de status */
+#notifications-table td:last-child {
+  width: 40px;
+  padding: 0.25rem;
+}
+
+/* Estilos para o indicador de status de conexão com o banco de dados */
+.connection-status .badge {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.connection-status .badge.bg-success {
+  animation: pulse-success 2s infinite;
+}
+
+.connection-status .badge.bg-danger {
+  animation: pulse-danger 1.5s infinite;
+}
+
+.connection-status .badge.bg-warning {
+  animation: pulse-warning 1.5s infinite;
+}
+
+@keyframes pulse-success {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+@keyframes pulse-danger {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+@keyframes pulse-warning {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
